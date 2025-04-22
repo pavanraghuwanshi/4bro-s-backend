@@ -1,9 +1,16 @@
-import express from "express";
+const express = require("express");
 const router = express.Router();
 
-router.use("/drivers", async (req,res) => {
-     console.log("Driver route is working");
-     return res.status(200).json("Driver route is working");
-});
 
-export default router;
+
+const userRoutes = require("./user.route");
+const studentRoutes = require("./student.route");
+
+
+router.use("/user", userRoutes);
+router.use("/student", studentRoutes);
+
+
+
+
+module.exports = router;
