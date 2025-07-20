@@ -13,6 +13,7 @@ exports.registersuperAdmin = async (req, res) => {
           const encryptedPassword = encrypt(password);
           const superadmin = new SuperAdmin({ username, email, password: encryptedPassword, role: 1 });
           await superadmin.save();
+          delete superadmin.password;
           return res.status(201).json({ message: 'Superadmin created successfully', superadmin });
      } catch (error) {
           console.error('Error registering superadmin:', error);
