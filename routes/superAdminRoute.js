@@ -1,9 +1,10 @@
 const express = require("express");
 const { registersuperAdmin, updatesuperAdmin } = require("../controllers/superAdmin.controller");
+const authenticate = require("../middlewares/authMiddleware");
 
 const router = express.Router();
 
-router.post("/register-superadmin", registersuperAdmin);
-router.post("/update-superadmin", updatesuperAdmin);
+router.post("/register-superadmin",authenticate, registersuperAdmin);
+router.post("/update-superadmin",authenticate, updatesuperAdmin);
 
 module.exports = router;

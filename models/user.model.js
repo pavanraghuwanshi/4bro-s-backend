@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema(
     password: { type: String, required: true },
     email: { type: String, unique: true },
     role: { type: Number, default: 3 },
-    adminId: { type: mongoose.Schema.Types.ObjectId, ref: 'Admin' },
+    adminId: { type: mongoose.Schema.Types.ObjectId, ref: 'Admin', required: true },
     firebaseToken: [{ type: String }],
     createdAt: { type: Date, default: () => new Date(new Date().getTime() + (5.5 * 60 * 60 * 1000)) }
   },

@@ -4,9 +4,14 @@ const findSameUsername = require('../utils/findUniqueUsername');
 
 exports.registerDriver = async (req, res) => {
      try {
-          const { username, email, password, adminId, userId } = req.body;
+          const role = req.user.role
+          if (role !== 1 && role !== 2 & role !== 3) return res.status(400).json({ message: "Unauthorized access" })
+          let { username, email, password, adminId, userId } = req.body;
           if (!username || !email || !password) return res.status(400).json({ message: 'Username, email, and password are required.' });
-
+          if (role === 3) {
+               adminId = req.user.adminId;
+               userId = req.user.id;
+          };
           const userExists = await findSameUsername(username);
           if (userExists.exists) return res.status(400).json(userExists.message);
 

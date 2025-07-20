@@ -32,16 +32,22 @@ exports.login = async (req, res) => {
                process.env.JWT_SECRET,
           );
 
-          return res.status(200).json({
-               message: "Welcome" + foundUser.username,
-               token,
-               user: {
-                    id: foundUser._id,
-                    username: foundUser.username,
-                    role: foundUser.role,
-                    email: foundUser.email,
-               },
-          });
+          return res
+               .cookie("token", token, {
+                    httpOnly: true,
+                    maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+               })
+               .status(200)
+               .json({
+                    message: "Welcome" + foundUser.username,
+                    token,
+                    user: {
+                         id: foundUser._id,
+                         username: foundUser.username,
+                         role: foundUser.role,
+                         email: foundUser.email,
+                    },
+               });
      } catch (error) {
           return res.status(500).json({ message: error.message });
      }

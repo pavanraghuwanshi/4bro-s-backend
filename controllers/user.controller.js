@@ -4,12 +4,13 @@ const findSameUsername = require('../utils/findUniqueUsername');
 
 exports.registerUser = async (req, res) => {
      try {
-          const { username, email, password, adminId } = req.body;
+          const role = req.user.role
+          if (role !== 1 && role !== 2) return res.status(400).json({ message: "Unauthorized access" })
+          let { username, email, password, adminId } = req.body;
           if (!username || !email || !password) return res.status(400).json({ message: 'Username, email, and password are required.' });
-
+          if (role === 2) adminId = req.user.id;
           const userExists = await findSameUsername(username);
           if (userExists.exists) return res.status(400).json(userExists.message);
-
           const emailExists = await User.findOne({ email });
           if (emailExists) return res.status(400).json({ message: 'Email already in use.' });
 
@@ -32,6 +33,8 @@ exports.registerUser = async (req, res) => {
 
 exports.updateUser = async (req, res) => {
      try {
+          const role = req.user.role
+          if (role !== 1 && role !== 2 && role !== 3) return res.status(400).json({ message: "Unauthorized access" })
           const { id } = req.params;
           if (!id) return res.status(400).json({ message: 'User ID is required.' });
           const { username, email, password } = req.body;

@@ -28,6 +28,7 @@ const authenticate = async (req, res, next) => {
     if (role === 3) {
       const user = await User.findById(decoded.id);
       if (!user) return res.status(404).json({ message: "User not found" });
+      decoded.adminId = user.adminId;
       req.user = decoded;
       req.user.adminId = user.adminId;
       return next();
@@ -35,6 +36,8 @@ const authenticate = async (req, res, next) => {
     if (role === 4) {
       const user = await Driver.findById(decoded.id);
       if (!user) return res.status(404).json({ message: "User not found" });
+      decoded.userId = user.userId;
+      decoded.adminId = user.adminId;
       req.user = decoded;
       return next();
     }

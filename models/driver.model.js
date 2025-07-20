@@ -6,8 +6,8 @@ const driverSchema = new mongoose.Schema(
     password: { type: String, required: true },
     email: { type: String, unique: true },
     role: { type: Number, default: 4 },
-    adminId: { type: mongoose.Schema.Types.ObjectId, ref: 'Admin' },
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    adminId: { type: mongoose.Schema.Types.ObjectId, ref: 'Admin', required: true },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     firebaseToken: [{ type: String }],
     createdAt: { type: Date, default: () => new Date(new Date().getTime() + (5.5 * 60 * 60 * 1000)) }
   },
