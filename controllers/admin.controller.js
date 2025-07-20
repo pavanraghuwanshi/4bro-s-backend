@@ -5,7 +5,8 @@ const findSameUsername = require('../utils/findUniqueUsername');
 exports.registerAdmin = async (req, res) => {
      try {
           const { username, email, password, notificationAllow } = req.body;
-          if (!username || email || !password) return res.status(400).json({ message: 'Username and password are required.' });
+          console.log("AAAAA",req.body);
+          if (!username || !email || !password) return res.status(400).json({ message: 'Username and password are required.' });
 
           const userExists = await findSameUsername(username);
           if (userExists.exists) return res.status(400).json(userExists.message);
