@@ -21,16 +21,14 @@ app.use(
      })
 );
 
+app.use("/api", router);
+
 app.get("/", (req, res) => {
      return res.status(200).json({
           message: "Server is running...",
           success: true,
      });
 });
-
-// Use routes
-app.use("/api", router);
-
 
 const PORT = process.env.PORT || 9000;
 app.listen(PORT, async () => {
