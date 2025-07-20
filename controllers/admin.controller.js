@@ -1,5 +1,5 @@
 const Admin = require('../models/admin.model');
-const { encrypt } = require('../utils/cryptoUtils');
+const { encrypt, decrypt } = require('../utils/cryptoUtils');
 const findSameUsername = require('../utils/findUniqueUsername');
 
 exports.registerAdmin = async (req, res) => {
@@ -56,6 +56,36 @@ exports.updateAdmin = async (req, res) => {
           return res.status(200).json({ message: 'Admin updated successfully.', admin });
      } catch (error) {
           console.error('Error updating admin:', error);
+          return res.status(500).json({ message: 'Internal server error.' + error.message });
+     }
+};
+
+exports.getAdminById = async (req, res) => {
+     try {
+          const role = req.user.role;
+          if (role !== 1) return res.status(403).json({ message: 'Unauthorized access.' });
+          const { id } = req.params;
+          if (!id) return res.status(400).json({ message: 'Admin ID is required.' });
+          const admin = await Admin.findById(id);
+          if (!admin) return res.status(404).json({ message: 'Admin not found.' });
+          admin.password = decrypt(admin.password);
+          return res.status(200).json(admin);
+     } catch (error) {
+          console.error('Error retrieving admin:', error);
+          return res.status(500).json({ message: 'Internal server error.' + error.message });
+     }
+};
+exports.getAllAdmins = async (req, res) => {
+     try {
+          const role = req.user.role;
+          if (role !== 1) return res.status(403).json({ message: 'Unauthorized access.' });
+          const admins = await Admin.find();
+          admins.forEach(admin => {
+               admin.password = decrypt(admin.password);
+          });
+          return res.status(200).json(admins);
+     } catch (error) {
+          console.error('Error retrieving admins:', error);
           return res.status(500).json({ message: 'Internal server error.' + error.message });
      }
 };
