@@ -1,5 +1,5 @@
 const User = require('../models/user.model');
-const { encrypt } = require('../utils/cryptoUtils');
+const { encrypt, decrypt } = require('../utils/cryptoUtils');
 const findSameUsername = require('../utils/findUniqueUsername');
 
 exports.registerUser = async (req, res) => {
@@ -62,6 +62,52 @@ exports.updateUser = async (req, res) => {
           return res.status(200).json({ message: 'User updated successfully.', updatedUser });
      } catch (error) {
           console.error('Error updating user:', error.message);
+          return res.status(500).json({ message: 'Internal server error.' + error.message });
+     }
+};
+
+exports.getUserById = async (req, res) => {
+     try {
+          const { id } = req.params;
+          if (!id) return res.status(400).json({ message: 'User ID is required.' });
+          const user = await User.findById(id);
+          if (!user) return res.status(404).json({ message: 'User not found.' });
+          user.password = undefined;
+          return res.status(200).json(user);
+     } catch (error) {
+          console.error('Error retrieving user:', error);
+          return res.status(500).json({ message: 'Internal server error.' + error.message });
+     }
+};
+
+exports.getAllUsers = async (req, res) => {
+     try {
+          const role = req.user.role;
+          if (role !== 1 && role !== 2) return res.status(403).json({ message: 'Unauthorized access.' });
+          let filter = {};
+          if (role === 2) filter.adminId = req.user.id;
+          const users = await User.find(filter);
+          if (users.length === 0) return res.status(404).json({ message: 'No users found.' });
+          users.forEach(user => {
+               user.password = decrypt(user.password);
+          });
+          return res.status(200).json(users);
+     } catch (error) {
+          console.error('Error retrieving users:', error);
+          return res.status(500).json({ message: 'Internal server error.' + error.message });
+     }
+};
+exports.deleteUser = async (req, res) => {
+     try {
+          const role = req.user.role;
+          if (role !== 1 && role !== 2) return res.status(403).json({ message: 'Unauthorized access.' });
+          const { id } = req.params;
+          if (!id) return res.status(400).json({ message: 'User ID is required.' });
+          const user = await User.findByIdAndDelete(id);
+          if (!user) return res.status(404).json({ message: 'User not found.' });
+          return res.status(200).json({ message: 'User deleted successfully.' });
+     } catch (error) {
+          console.error('Error deleting user:', error);
           return res.status(500).json({ message: 'Internal server error.' + error.message });
      }
 };

@@ -5,6 +5,7 @@ const authenticate = require("../middlewares/authMiddleware");
 const router = express.Router();
 
 router.post("/register-superadmin",authenticate, registersuperAdmin);
-router.post("/update-superadmin",authenticate, updatesuperAdmin);
+
+router.patch("/update-superadmin",authenticate, updatesuperAdmin);
 
 module.exports = router;
