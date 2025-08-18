@@ -99,7 +99,7 @@ exports.getAllDrivers = async (req, res) => {
           if (!drivers || drivers.length === 0) return res.status(404).json({ message: 'No drivers found.' });
 
           drivers.forEach(driver => {
-               driver.password =  decrypt(driver.password);
+               driver.password = decrypt(driver.password);
           });
           return res.status(200).json({ message: 'Drivers retrieved successfully.', drivers });
      } catch (error) {

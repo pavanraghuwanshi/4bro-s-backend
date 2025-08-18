@@ -8,7 +8,7 @@ router.post('/register-driver', authenticate, registerDriver);
 router.get('/get-driver/:id', authenticate, getDriverById);
 router.get('/get-all-drivers', authenticate, getAllDrivers);
 
-router.patch('/update-driver', authenticate, updateDriver);
+router.patch('/update-driver/:driverId', authenticate, updateDriver);
 
 
 module.exports = router;
